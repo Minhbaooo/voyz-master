@@ -7,6 +7,7 @@ import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/data/trip_data.dart';
 import 'package:voyz/screens/saved_screen.dart';
 import 'package:voyz/screens/suggestions_screen.dart';
+import 'package:voyz/screens/explore_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
 import 'package:voyz/widgets/shared/glass_card.dart';
@@ -139,10 +140,8 @@ class _SmartPlannerScreenState extends State<SmartPlannerScreen> {
         // Already on AI Planner
         break;
       case 1:
-        if (!_validateInput()) return;
-        _saveCurrentState();
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const SuggestionsScreen()),
+          MaterialPageRoute(builder: (_) => const ExploreScreen()),
           (route) => false,
         );
         break;
@@ -483,7 +482,13 @@ class _SmartPlannerScreenState extends State<SmartPlannerScreen> {
                         children: [
                           Expanded(
                             child: OutlinedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const ExploreScreen(),
+                                  ),
+                                );
+                              },
                               style: OutlinedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 16,

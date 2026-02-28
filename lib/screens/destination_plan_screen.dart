@@ -3,7 +3,7 @@ import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/models/itinerary_plan.dart';
 import 'package:voyz/screens/saved_screen.dart';
 import 'package:voyz/screens/smart_planner_screen.dart';
-import 'package:voyz/screens/suggestions_screen.dart';
+import 'package:voyz/screens/explore_screen.dart';
 import 'package:voyz/services/gemini_service.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
@@ -84,7 +84,7 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
         break;
       case 1:
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const SuggestionsScreen()),
+          MaterialPageRoute(builder: (_) => const ExploreScreen()),
           (route) => false,
         );
         break;

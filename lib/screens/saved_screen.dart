@@ -4,7 +4,7 @@ import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/data/trip_data.dart';
 import 'package:voyz/screens/destination_detail_screen.dart';
 import 'package:voyz/screens/smart_planner_screen.dart';
-import 'package:voyz/screens/suggestions_screen.dart';
+import 'package:voyz/screens/explore_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
 
@@ -27,7 +27,7 @@ class _SavedScreenState extends State<SavedScreen> {
         break;
       case 1:
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const SuggestionsScreen()),
+          MaterialPageRoute(builder: (_) => const ExploreScreen()),
           (route) => false,
         );
         break;

@@ -28,7 +28,7 @@ class _SuggestionsScreenState extends State<SuggestionsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadSuggestions());
   }
 
-  Future<void> _loadSuggestions() async {
+  Future<void> _loadSuggestions({bool forceRefresh = false}) async {
     setState(() {
       _isLoading = true;
       _error = null;
@@ -39,6 +39,7 @@ class _SuggestionsScreenState extends State<SuggestionsScreen> {
       final results = await GeminiService.instance.getSuggestions(
         trip,
         limit: 10,
+        forceRefresh: forceRefresh,
       );
       if (mounted) {
         setState(() {
@@ -93,7 +94,10 @@ class _SuggestionsScreenState extends State<SuggestionsScreen> {
           child: Column(
             children: [
               // ── Header ──
-              _Header(theme: theme, onRefresh: _loadSuggestions),
+              _Header(
+                theme: theme,
+                onRefresh: () => _loadSuggestions(forceRefresh: true),
+              ),
 
               // ── Content ──
               Expanded(child: _buildBody(theme)),

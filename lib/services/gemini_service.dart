@@ -7,14 +7,18 @@ import 'package:voyz/models/destination_detail.dart';
 import 'package:voyz/models/destination_suggestion.dart';
 import 'package:voyz/models/itinerary_plan.dart';
 
+import 'package:voyz/services/cache_service.dart';
 import 'package:voyz/services/image_service.dart';
 
 /// Central service for interacting with the Gemini Flash 3 API.
 ///
 /// Uses Vietnamese prompts and returns strongly-typed Dart models.
+/// All methods check Hive cache first; only calls the API on cache miss.
 class GeminiService {
   GeminiService._();
   static final GeminiService instance = GeminiService._();
+
+  final CacheService _cache = CacheService.instance;
 
   GenerativeModel? _model;
 
@@ -37,21 +41,108 @@ class GeminiService {
     return _model!;
   }
 
+  // ── Explore (independent, no TripData needed) ─────────────────────────
+
+  /// Get trending travel destinations for free exploration.
+  /// Does NOT require any user input — perfect for the Explore tab.
+  ///
+  /// [limit] number of destinations to return.
+  /// [forceRefresh] if true, bypasses the cache.
+  Future<List<DestinationSuggestion>> getExploreTrending({
+    int limit = 10,
+    bool forceRefresh = false,
+  }) async {
+    final cacheKey = _cache.buildKey('explore_trending', {'limit': limit});
+
+    if (!forceRefresh) {
+      final cached = _cache.get(cacheKey);
+      if (cached != null) {
+        return _parseSuggestions(cached);
+      }
+    }
+
+    final prompt =
+        '''
+Bạn là chuyên gia du lịch AI. Hãy gợi ý $limit điểm đến du lịch đang thịnh hành nhất hiện nay, bao gồm cả trong nước Việt Nam và quốc tế.
+
+Ưu tiên các điểm đến:
+- Đa dạng vùng miền (biển, núi, thành phố, thiên nhiên hoang sơ)
+- Phù hợp với mùa du lịch hiện tại
+- Có cả địa điểm bình dân và cao cấp
+- Mix giữa Việt Nam và quốc tế
+
+Trả về JSON array với đúng $limit phần tử, mỗi phần tử:
+{
+  "name": "Tên địa điểm, Quốc gia",
+  "matchPercent": 85,
+  "rating": 4.5,
+  "reviewCount": 1200,
+  "price": "~4.2M VNĐ",
+  "aiInsight": "Lý do nên đến ngay thời điểm này (1-2 câu)",
+  "isTopMatch": false
+}
+
+Quy tắc:
+- matchPercent thể hiện mức độ trending (60-99)
+- rating từ 1.0-5.0
+- reviewCount là ước tính số đánh giá
+- price là chi phí ước tính cho 1 người/chuyến
+- aiInsight nên đề cập lý do trending (mùa lễ hội, thời tiết đẹp, ...)
+- Phần tử đầu tiên có isTopMatch = true
+- CHỈ trả về JSON array, KHÔNG thêm markdown hay text khác
+''';
+
+    final response = await _gemini.generateContent([Content.text(prompt)]);
+    final text = response.text;
+    if (text == null || text.isEmpty) return [];
+
+    await _cache.put(cacheKey, text);
+    return _parseSuggestions(text);
+  }
+
   // ── Suggestions ──────────────────────────────────────────────────────
 
   /// Get AI travel suggestions based on user's trip preferences.
   ///
   /// [trip] contains destination, budget, interests, dates, etc.
   /// [limit] controls the number of suggestions returned (default 10).
+  /// [forceRefresh] if true, bypasses the cache and calls the API.
   Future<List<DestinationSuggestion>> getSuggestions(
     TripData trip, {
     int limit = 10,
+    bool forceRefresh = false,
   }) async {
+    // Build cache key from the inputs that actually affect the result
+    final cacheKey = _cache.buildKey('suggestions', {
+      'destination': trip.destination,
+      'budget': trip.budget,
+      'currency': trip.currency,
+      'interests': trip.selectedInterests,
+      'limit': limit,
+    });
+
+    // Check cache
+    if (!forceRefresh) {
+      final cached = _cache.get(cacheKey);
+      if (cached != null) {
+        return _parseSuggestions(cached);
+      }
+    }
+
+    // Cache miss — call Gemini API
     final prompt = _buildSuggestionsPrompt(trip, limit);
     final response = await _gemini.generateContent([Content.text(prompt)]);
     final text = response.text;
     if (text == null || text.isEmpty) return [];
 
+    // Save to cache
+    await _cache.put(cacheKey, text);
+
+    return _parseSuggestions(text);
+  }
+
+  /// Parse raw JSON text into a list of DestinationSuggestion with images.
+  Future<List<DestinationSuggestion>> _parseSuggestions(String text) async {
     final List<dynamic> jsonList = jsonDecode(text) as List<dynamic>;
 
     // Batch fetch image URLs
@@ -145,10 +236,24 @@ Quy tắc:
   // ── Destination Detail ────────────────────────────────────────────────
 
   /// Get detailed information about a specific destination.
+  ///
+  /// [forceRefresh] if true, bypasses the cache.
   Future<DestinationDetail> getDestinationDetail(
     String destinationName,
-    TripData trip,
-  ) async {
+    TripData trip, {
+    bool forceRefresh = false,
+  }) async {
+    final cacheKey = _cache.buildKey('detail', {'name': destinationName});
+
+    // Check cache
+    if (!forceRefresh) {
+      final cached = _cache.get(cacheKey);
+      if (cached != null) {
+        return _parseDetail(cached, destinationName);
+      }
+    }
+
+    // Cache miss — call Gemini API
     final prompt = _buildDetailPrompt(destinationName, trip);
     final response = await _gemini.generateContent([Content.text(prompt)]);
     final text = response.text;
@@ -156,10 +261,20 @@ Quy tắc:
       throw Exception('Không nhận được phản hồi từ AI.');
     }
 
+    // Save to cache
+    await _cache.put(cacheKey, text);
+
+    return _parseDetail(text, destinationName);
+  }
+
+  /// Parse raw JSON text into a DestinationDetail with image.
+  Future<DestinationDetail> _parseDetail(
+    String text,
+    String destinationName,
+  ) async {
     final Map<String, dynamic> json = jsonDecode(text) as Map<String, dynamic>;
     final name = json['name'] as String? ?? destinationName;
     final imageUrl = await ImageService.instance.getImageUrl(name);
-
     return DestinationDetail.fromJson(json, imageUrl);
   }
 
@@ -210,18 +325,39 @@ Quy tắc:
   ///
   /// [numDays] number of days in the itinerary.
   /// [limit] max activities per day (default 4).
+  /// [forceRefresh] if true, bypasses the cache.
   Future<ItineraryPlan> getItineraryPlan(
     String destinationName,
     int numDays,
     TripData trip, {
     int limit = 4,
+    bool forceRefresh = false,
   }) async {
+    final cacheKey = _cache.buildKey('itinerary', {
+      'name': destinationName,
+      'numDays': numDays,
+    });
+
+    // Check cache
+    if (!forceRefresh) {
+      final cached = _cache.get(cacheKey);
+      if (cached != null) {
+        final Map<String, dynamic> json =
+            jsonDecode(cached) as Map<String, dynamic>;
+        return ItineraryPlan.fromJson(json);
+      }
+    }
+
+    // Cache miss — call Gemini API
     final prompt = _buildItineraryPrompt(destinationName, numDays, trip, limit);
     final response = await _gemini.generateContent([Content.text(prompt)]);
     final text = response.text;
     if (text == null || text.isEmpty) {
       throw Exception('Không nhận được phản hồi từ AI.');
     }
+
+    // Save to cache
+    await _cache.put(cacheKey, text);
 
     final Map<String, dynamic> json = jsonDecode(text) as Map<String, dynamic>;
     return ItineraryPlan.fromJson(json);
