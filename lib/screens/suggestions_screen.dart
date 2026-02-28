@@ -392,7 +392,7 @@ class _CardActions extends StatelessWidget {
   final Map<String, dynamic> data;
 
   void _onAddToWishlist(BuildContext context) {
-    SavedTripsProvider.of(context).saveToWishlist(
+    final added = SavedTripsProvider.of(context).saveToWishlist(
       name: data['name'] as String,
       imageUrl: data['imageUrl'] as String,
       price: data['price'] as String,
@@ -406,17 +406,25 @@ class _CardActions extends StatelessWidget {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.favorite, color: Colors.white, size: 18),
+            Icon(
+              added ? Icons.favorite : Icons.info_outline,
+              color: Colors.white,
+              size: 18,
+            ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                '${data['name']} added to wishlist!',
+                added
+                    ? '${data['name']} added to wishlist!'
+                    : '${data['name']} is already saved!',
                 style: const TextStyle(color: Colors.white),
               ),
             ),
           ],
         ),
-        backgroundColor: AppTheme.primaryPink.withValues(alpha: 0.9),
+        backgroundColor: added
+            ? AppTheme.primaryPink.withValues(alpha: 0.9)
+            : const Color(0xFF475569),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 2),

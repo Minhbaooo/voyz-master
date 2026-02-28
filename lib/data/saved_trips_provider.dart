@@ -31,7 +31,8 @@ class SavedTripsProviderState extends State<SavedTripsProvider> {
   }
 
   /// Save the full trip (planner data + destination detail) to the saved list.
-  void saveFullTrip({
+  /// Returns false if the item already exists (duplicate by name).
+  bool saveFullTrip({
     required String name,
     required String imageUrl,
     required String price,
@@ -40,6 +41,7 @@ class SavedTripsProviderState extends State<SavedTripsProvider> {
     required int reviewCount,
     required String aiInsight,
   }) {
+    if (_savedItems.any((e) => e.name == name)) return false;
     setState(() {
       _savedItems.add(
         SavedItem(
@@ -54,10 +56,12 @@ class SavedTripsProviderState extends State<SavedTripsProvider> {
         ),
       );
     });
+    return true;
   }
 
   /// Save only the destination card to the wishlist (no planner data).
-  void saveToWishlist({
+  /// Returns false if the item already exists (duplicate by name).
+  bool saveToWishlist({
     required String name,
     required String imageUrl,
     required String price,
@@ -66,6 +70,7 @@ class SavedTripsProviderState extends State<SavedTripsProvider> {
     required int reviewCount,
     required String aiInsight,
   }) {
+    if (_savedItems.any((e) => e.name == name)) return false;
     setState(() {
       _savedItems.add(
         SavedItem(
@@ -80,6 +85,7 @@ class SavedTripsProviderState extends State<SavedTripsProvider> {
         ),
       );
     });
+    return true;
   }
 
   /// Remove an item from saved list.

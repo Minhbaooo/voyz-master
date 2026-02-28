@@ -62,7 +62,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
   }
 
   void _onSaveInfo(BuildContext context) {
-    SavedTripsProvider.of(context).saveFullTrip(
+    final added = SavedTripsProvider.of(context).saveFullTrip(
       name: MockData.detailName,
       imageUrl: MockData.detailHeroImageUrl,
       price: MockData.detailBudget,
@@ -74,14 +74,26 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Row(
+        content: Row(
           children: [
-            Icon(Icons.bookmark_added, color: Colors.white, size: 18),
-            SizedBox(width: 8),
-            Expanded(child: Text('Trip info saved! Check your Saved tab.')),
+            Icon(
+              added ? Icons.bookmark_added : Icons.info_outline,
+              color: Colors.white,
+              size: 18,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                added
+                    ? 'Trip info saved! Check your Saved tab.'
+                    : '${MockData.detailName} is already saved!',
+              ),
+            ),
           ],
         ),
-        backgroundColor: const Color(0xFF10B981),
+        backgroundColor: added
+            ? const Color(0xFF10B981)
+            : const Color(0xFF475569),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 2),

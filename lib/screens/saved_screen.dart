@@ -59,7 +59,11 @@ class _SavedScreenState extends State<SavedScreen> {
 
               // ── Content ──
               Expanded(
-                child: _ItemListView(items: allItems, label: 'saved items'),
+                child: _ItemListView(
+                  items: allItems,
+                  label: 'saved items',
+                  onRemoved: () => setState(() {}),
+                ),
               ),
             ],
           ),
@@ -119,9 +123,14 @@ class _Header extends StatelessWidget {
 // ── Item List View ──────────────────────────────────────────────────────
 
 class _ItemListView extends StatelessWidget {
-  const _ItemListView({required this.items, required this.label});
+  const _ItemListView({
+    required this.items,
+    required this.label,
+    this.onRemoved,
+  });
   final List<SavedItem> items;
   final String label;
+  final VoidCallback? onRemoved;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +151,7 @@ class _ItemListView extends StatelessWidget {
               ),
             );
           },
-          child: _SavedItemCard(item: items[index]),
+          child: _SavedItemCard(item: items[index], onRemoved: onRemoved),
         );
       },
     );
@@ -207,8 +216,9 @@ class _EmptyState extends StatelessWidget {
 // ── Saved Item Card ─────────────────────────────────────────────────────
 
 class _SavedItemCard extends StatelessWidget {
-  const _SavedItemCard({required this.item});
+  const _SavedItemCard({required this.item, this.onRemoved});
   final SavedItem item;
+  final VoidCallback? onRemoved;
 
   @override
   Widget build(BuildContext context) {
@@ -409,6 +419,7 @@ class _SavedItemCard extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       SavedTripsProvider.of(context).removeSavedItem(item);
+                      onRemoved?.call();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('${item.name} removed'),
