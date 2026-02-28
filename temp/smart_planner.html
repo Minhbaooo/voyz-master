@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-pink": "#FF4E8E",
+                        "primary-orange": "#FF8E53",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0A0E1A",
+                        "navy-accent": "#12182B",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                font-family: 'Inter', sans-serif;
+                min-height: max(884px, 100dvh);
+            }
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-brand {
+            background: rgba(255, 78, 142, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 78, 142, 0.3);
+        }
+        .gradient-bg {
+            background: radial-gradient(circle at top right, #1a1c2e, #0A0E1A);
+        }
+        .brand-gradient-bg {
+            background: linear-gradient(to right, #FF4E8E, #FF8E53);
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
+<div class="relative flex min-h-screen w-full flex-col gradient-bg overflow-x-hidden max-w-md mx-auto shadow-2xl border-x border-slate-800/50">
+<header class="flex items-center bg-transparent p-6 justify-between">
+<div class="flex flex-col items-start">
+<h2 class="text-primary-pink text-xl font-bold leading-tight tracking-tight italic">
+                    AIVIVU 
+                    <span class="font-normal text-xs block not-italic opacity-70 tracking-normal text-slate-300">Smart Planner</span>
+</h2>
+</div>
+<div class="size-10 rounded-full border border-primary-pink/30 flex items-center justify-center overflow-hidden">
+<img alt="User profile avatar portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWKzJjIC-bCxkKLNaEMpT1-pEwOTknOSyDbRwNxHcwt3sePJQsJYIdFLMQUs8hwT-JRUBOzHiyDr85CdA2-3heHgP_k-aGXNenCqzpTSZnT7579AJv7FaUfT9F6Ec5OgKDuwIr2G8FXEwiTwrSMxnzxjvRvFa8isrU2XoG-mGZmNI_OxGjbza5ikkwPjcvbQfmXsiLCCShCt0dzMpEvXVNWIlFGuuKfpT-kcO6AhtYrF2A-4PRAhNNU2YZF-gOaCSzzUFrHUGL8HQ"/>
+</div>
+</header>
+<main class="flex-1 px-6 pb-32">
+<h1 class="text-slate-100 tracking-tight text-3xl font-bold leading-tight pt-4 pb-8">Plan your next adventure.</h1>
+<div class="glass-brand rounded-xl p-4 mb-8 shadow-[0_0_20px_rgba(255,78,142,0.1)]">
+<div class="flex gap-3">
+<div class="flex-1">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-slate-100 placeholder:text-slate-500 text-base leading-relaxed resize-none h-24" placeholder="Tell me your dream trip... e.g. I have 5M VNĐ, want a relaxing beach getaway for 3 days"></textarea>
+</div>
+</div>
+<div class="flex items-center justify-end mt-2 pt-2 border-t border-primary-pink/10">
+<div class="text-[10px] font-semibold uppercase tracking-widest text-primary-pink/80">Powered by AIVIVU AI</div>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-4 mb-8">
+<div class="glass rounded-xl p-3 flex items-center gap-3">
+<div class="bg-slate-800/50 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-400 text-xl">public</span>
+</div>
+<div class="flex-1">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Destination</p>
+<input class="bg-transparent border-none p-0 focus:ring-0 text-slate-200 text-sm w-full placeholder:text-slate-600" placeholder="Where to?" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass rounded-xl p-3 flex items-center gap-3">
+<div class="bg-slate-800/50 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-400 text-xl">calendar_today</span>
+</div>
+<div class="flex-1">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Depart</p>
+<input class="bg-transparent border-none p-0 focus:ring-0 text-slate-200 text-sm w-full placeholder:text-slate-600" placeholder="Add date" type="text"/>
+</div>
+</div>
+<div class="glass rounded-xl p-3 flex items-center gap-3">
+<div class="bg-slate-800/50 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-400 text-xl">calendar_month</span>
+</div>
+<div class="flex-1">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Return</p>
+<input class="bg-transparent border-none p-0 focus:ring-0 text-slate-200 text-sm w-full placeholder:text-slate-600" placeholder="Add date" type="text"/>
+</div>
+</div>
+</div>
+<div class="glass rounded-xl p-3 flex items-center gap-4">
+<div class="flex flex-1 items-center gap-3">
+<div class="bg-slate-800/50 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-400 text-xl font-light">payments</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Amount</p>
+<input class="bg-transparent border-none p-0 focus:ring-0 text-slate-200 text-sm w-full placeholder:text-slate-600" placeholder="0.00" type="number"/>
+</div>
+</div>
+<div class="w-px h-10 bg-slate-800/50"></div>
+<div class="flex flex-1 items-center gap-3">
+<div class="bg-slate-800/50 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-400 text-xl font-light">currency_exchange</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Currency</p>
+<select class="bg-transparent border-none p-0 focus:ring-0 text-slate-200 text-sm w-full appearance-none cursor-pointer">
+<option class="bg-background-dark" selected="" value="VND">VNĐ</option>
+<option class="bg-background-dark" value="USD">USD</option>
+<option class="bg-background-dark" value="EUR">EUR</option>
+<option class="bg-background-dark" value="THB">THB</option>
+</select>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass rounded-xl p-3 flex items-center gap-3">
+<div class="bg-slate-800/50 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-400 text-xl">group</span>
+</div>
+<div class="flex-1">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Participants</p>
+<input class="bg-transparent border-none p-0 focus:ring-0 text-slate-200 text-sm w-full placeholder:text-slate-600" placeholder="How many?" type="number"/>
+</div>
+</div>
+<div class="glass rounded-xl p-3 flex items-center gap-3">
+<div class="bg-slate-800/50 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-400 text-xl">cake</span>
+</div>
+<div class="flex-1">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Age Range</p>
+<input class="bg-transparent border-none p-0 focus:ring-0 text-slate-200 text-sm w-full placeholder:text-slate-600" placeholder="e.g. 25-35" type="text"/>
+</div>
+</div>
+</div>
+<div class="glass rounded-xl p-3">
+<div class="flex items-center gap-3 mb-3">
+<div class="bg-slate-800/50 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-400 text-xl">sell</span>
+</div>
+<div class="flex-1">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Interests</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-primary-pink/20 border border-primary-pink/30 text-primary-pink rounded-full text-xs font-medium">Beach</span>
+<span class="px-3 py-1 bg-slate-800/50 border border-slate-700 text-slate-400 rounded-full text-xs font-medium">Adventure</span>
+<span class="px-3 py-1 bg-slate-800/50 border border-slate-700 text-slate-400 rounded-full text-xs font-medium">Culture</span>
+<span class="px-3 py-1 bg-primary-pink/20 border border-primary-pink/30 text-primary-pink rounded-full text-xs font-medium">Food</span>
+<span class="px-3 py-1 bg-slate-800/50 border border-slate-700 text-slate-400 rounded-full text-xs font-medium">Wellness</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4 mt-8">
+<button class="flex-1 py-4 px-4 rounded-xl border border-slate-700 text-slate-300 font-semibold text-sm hover:bg-slate-800/30 transition-all">
+                    Free Explore
+                </button>
+<button class="flex-[1.5] py-4 px-4 rounded-xl brand-gradient-bg text-white font-bold text-sm shadow-lg shadow-primary-pink/30 flex items-center justify-center gap-2">
+                    Get AI Suggestions
+                    <span class="material-symbols-outlined text-lg font-bold">arrow_forward</span>
+</button>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t border-slate-800/50 bg-background-dark/90 backdrop-blur-2xl px-6 pb-8 pt-4">
+<div class="flex justify-between items-center">
+<a class="flex flex-col items-center gap-1.5 text-slate-500 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[26px]">explore</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Explore</p>
+</a>
+<a class="flex flex-col items-center gap-1.5 text-slate-500 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[26px]">map</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">My Trips</p>
+</a>
+<a class="flex flex-col items-center gap-1.5 text-primary-pink transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1">auto_awesome</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">AI Planner</p>
+</a>
+<a class="flex flex-col items-center gap-1.5 text-slate-500 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[26px]">bookmark</span>
+<p class="text-[10px] font-bold uppercase tracking-widest">Saved</p>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>

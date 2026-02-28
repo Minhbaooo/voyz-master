@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html class="h-full dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AIVIVU - Minimalist Splash Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#FF5E8E",
+              "background-black": "#000000",
+            },
+            fontFamily: {
+              display: ["'Plus Jakarta Sans'", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+<style type="text/tailwindcss">
+        .gradient-text {
+            background: linear-gradient(90deg, #FF5E8E 0%, #F59E0B 40%, #A855F7 70%, #3B82F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+            background-color: #000000;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="h-full font-display text-white overflow-hidden">
+<div class="relative h-full flex flex-col items-center justify-between p-8 bg-black">
+<div class="h-12 w-full"></div>
+<div class="flex-1 flex flex-col items-center justify-center">
+<div class="text-center">
+<h1 class="text-6xl md:text-7xl font-extrabold tracking-tight gradient-text leading-none">
+                    AIVIVU
+                </h1>
+<p class="mt-6 text-slate-400 font-semibold tracking-[0.25em] text-[10px] sm:text-xs uppercase">
+                    Your Premium Travel Companion
+                </p>
+</div>
+</div>
+<div class="w-full flex flex-col items-center space-y-10 pb-12">
+<div class="flex space-x-2">
+<div class="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-500"></div>
+</div>
+<div class="text-[10px] text-slate-600 font-bold tracking-[0.3em] uppercase">
+                Version 4.2.0
+            </div>
+</div>
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-900 rounded-full"></div>
+</div>
+
+</body></html>

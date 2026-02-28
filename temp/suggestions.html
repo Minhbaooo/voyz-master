@@ -1,0 +1,234 @@
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#FF5E8A",
+            "accent-orange": "#FF8E53",
+            "accent-blue": "#64B5F6",
+            "background-light": "#fdf8f9",
+            "background-dark": "#0D0A16",
+            "navy-accent": "#1A1528",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style type="text/tailwindcss">
+    :root {
+      --aivivu-gradient: linear-gradient(135deg, #FF5E8A 0%, #FF8E53 100%);
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-heart-bg: rgba(255, 255, 255, 0.15);
+    }
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    .nav-item-active {
+      @apply text-primary;
+    }
+    .nav-item-inactive {
+      @apply text-slate-500 hover:text-slate-300 transition-colors;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+    .active-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24 !important;
+    }
+    .brand-gradient-text {
+      background: var(--aivivu-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-gradient-bg {
+      background: var(--aivivu-gradient);
+    }
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+    }
+    .glass-heart-btn {
+      background: var(--glass-heart-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-gradient-to-b from-[#0D0A16] to-[#1A1528] overflow-x-hidden max-w-[430px] mx-auto shadow-2xl pb-24">
+<div class="flex items-center p-4 pt-10 justify-between sticky top-0 z-20 bg-background-dark/80 backdrop-blur-md border-b border-white/5">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-white/5 cursor-pointer">
+<span class="material-symbols-outlined text-slate-100">arrow_back</span>
+</div>
+<div class="flex flex-col items-center">
+<p class="text-[10px] uppercase tracking-[0.2em] font-black brand-gradient-text">AIVIVU</p>
+<h2 class="text-slate-100 text-lg font-bold leading-tight tracking-tight">Travel Suggestions</h2>
+</div>
+<div class="flex w-10 items-center justify-end">
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-primary">auto_fix_high</span>
+</button>
+</div>
+</div>
+<div class="px-4 py-4">
+<div class="flex items-center gap-2 rounded-full glass-card px-4 py-2.5">
+<span class="text-primary material-symbols-outlined text-[18px]">location_on</span>
+<p class="text-slate-300 text-sm font-medium">Bali, Indonesia · 3 days · 5M VNĐ</p>
+</div>
+</div>
+<div class="flex flex-col gap-6 p-4">
+<div class="group relative flex flex-col items-stretch justify-start rounded-2xl overflow-hidden glass-card border-primary/20 shadow-[0_8px_32px_rgba(255,94,138,0.15)] transition-all duration-300">
+<div class="relative w-full aspect-[16/10] overflow-hidden">
+<img alt="Aerial view of Con Dao islands" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD80FbU1ZxfueAUUWKR7XyjmN9bvxplR8TDjnwnn8r7c8f17IHQCZVUOP3GzkryHJlsVWyK5mW4FYIPJapdR8Dt8dAnp9gfyvxIIw7e44v3DRwz0xaOOqLxDizWaY5JaVw_fH6WlPc5MuaBRLgNAaB4LYzfWvEpoFMzNSIdrd_5M6Lrvhneg8GES-JtcUlxZYyOFJeTt6AHdm1rtyuNmaR8cP4qbVNjWpqD0jSFeHWgNbUuhj_00vL53F8e7wsORrgn_7MDAGFlE_A"/>
+<div class="absolute top-3 left-3 flex h-8 items-center justify-center gap-1 rounded-lg brand-gradient-bg px-3 shadow-lg">
+<p class="text-white text-xs font-bold">98% Match ✨</p>
+</div>
+<button class="absolute top-3 right-3 flex size-10 items-center justify-center rounded-full glass-heart-btn text-white transition-all hover:scale-110 active:scale-95">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col gap-3 p-5">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-100 text-xl font-bold tracking-tight">Côn Đảo, Vietnam</p>
+<div class="flex items-center gap-0.5 mt-1">
+<span class="material-symbols-outlined text-[16px] text-accent-orange active-icon">star</span>
+<span class="material-symbols-outlined text-[16px] text-accent-orange active-icon">star</span>
+<span class="material-symbols-outlined text-[16px] text-accent-orange active-icon">star</span>
+<span class="material-symbols-outlined text-[16px] text-accent-orange active-icon">star</span>
+<span class="material-symbols-outlined text-[16px] text-accent-orange">star_half</span>
+<span class="text-slate-400 text-xs ml-1 font-medium">(120 reviews)</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-accent-blue text-sm font-bold">~4.2M VNĐ</p>
+<p class="text-slate-400 text-[10px] uppercase tracking-wider">/ person</p>
+</div>
+</div>
+<div class="bg-primary/10 border border-primary/20 rounded-lg p-3">
+<p class="text-slate-200 text-xs leading-relaxed">
+<span class="font-bold text-primary">💡 AI Insight:</span> Perfect for your wellness budget. Dry season now — best conditions of the year.
+            </p>
+</div>
+<div class="flex items-center gap-3 mt-1">
+<button class="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl h-11 border border-white/10 text-slate-100 hover:bg-white/5 transition-all text-xs font-bold uppercase tracking-wide">
+<span class="material-symbols-outlined text-[18px]">share</span>
+<span>Share</span>
+</button>
+<button class="flex flex-[1.5] cursor-pointer items-center justify-center gap-2 rounded-xl h-11 brand-gradient-bg text-white shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all text-xs font-extrabold uppercase tracking-wide">
+<span class="material-symbols-outlined text-[18px]">bookmark_add</span>
+<span>Save Info</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group relative flex flex-col items-stretch justify-start rounded-2xl overflow-hidden glass-card transition-all duration-300">
+<div class="relative w-full aspect-[16/10] overflow-hidden">
+<img alt="Tropical beach resort" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgsNyLnIesjUjaXFGT5ibGButcaojYwEP1xbYEpw6FW9Eqary49L_WAyhptrnwRDQ2SavSS8YI0HI6fRUjtRSMVkFMp0e49HHfHjp-sGbMF18wbQhqXoqCiuUaNpnWMGW8bRtI3GlqydnB7wSPnEbTKAXmMf6FveaHANavCrQvnLQYa4J2pb_xWbZt5H01XSoJcFniRBUxAFGXmC6T6Qa57VitgMB2M4GCo5t9eJb9qw6WaTJeBiqDZXxOdJZp0ov4xy6VffHLZIs"/>
+<div class="absolute top-3 left-3 flex h-8 items-center justify-center gap-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/20 px-3">
+<p class="text-white text-xs font-bold">92% Match</p>
+</div>
+<button class="absolute top-3 right-3 flex size-10 items-center justify-center rounded-full glass-heart-btn text-white transition-all hover:scale-110 active:scale-95">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col gap-3 p-5">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-slate-100 text-xl font-bold tracking-tight">Phú Quốc, Vietnam</p>
+<div class="flex items-center gap-0.5 mt-1">
+<span class="material-symbols-outlined text-[16px] text-accent-orange active-icon">star</span>
+<span class="material-symbols-outlined text-[16px] text-accent-orange active-icon">star</span>
+<span class="material-symbols-outlined text-[16px] text-accent-orange active-icon">star</span>
+<span class="material-symbols-outlined text-[16px] text-accent-orange active-icon">star</span>
+<span class="material-symbols-outlined text-[16px] text-accent-orange active-icon">star</span>
+<span class="text-slate-400 text-xs ml-1 font-medium">(450 reviews)</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-accent-blue text-sm font-bold">~3.8M VNĐ</p>
+<p class="text-slate-400 text-[10px] uppercase tracking-wider">/ person</p>
+</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-lg p-3">
+<p class="text-slate-200 text-xs leading-relaxed">
+<span class="font-bold text-accent-orange">💡 AI Insight:</span> Great value for money. Suits your beach + relaxation preference.
+            </p>
+</div>
+<div class="flex items-center gap-3 mt-1">
+<button class="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl h-11 border border-white/10 text-slate-100 hover:bg-white/5 transition-all text-xs font-bold uppercase tracking-wide">
+<span class="material-symbols-outlined text-[18px]">share</span>
+<span>Share</span>
+</button>
+<button class="flex flex-[1.5] cursor-pointer items-center justify-center gap-2 rounded-xl h-11 brand-gradient-bg text-white shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all text-xs font-extrabold uppercase tracking-wide">
+<span class="material-symbols-outlined text-[18px]">bookmark_add</span>
+<span>Save Info</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group relative flex flex-col items-stretch justify-start rounded-2xl overflow-hidden glass-card opacity-50 mb-12">
+<div class="relative w-full aspect-[16/10] overflow-hidden">
+<img alt="Da Nang scenery" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKEZDG6D0KnziIG-l_8kLA4xvZJ4IIHPHUt5EHzzvRSyeHhJEPAzJHJ1KSBK2XjphQxjVnStF1-lUxr0Y8s0iw_C3VBS4bRxSVrBjVAorjxq1xC_5u8U98uJ7aLA_mqxtBXJxfiX9kBP4UWRAD8qvWPTFRCn4FXnLn8VadxI_n7T_f0MY6IIKLuswvo3QyyEkyEByEhSx1y5C4JzgYy6RoBf_JMBAgo9cRpGHwvwm3BYlAQdD66BBfzM10pfgjVwAi3F-MoD1FPZ0"/>
+<div class="absolute top-3 left-3 flex h-8 items-center justify-center gap-1 rounded-lg bg-black/60 px-3">
+<p class="text-white text-xs font-bold">85% Match</p>
+</div>
+<button class="absolute top-3 right-3 flex size-10 items-center justify-center rounded-full glass-heart-btn text-white">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-between items-center gap-1 border-t border-white/5 bg-background-dark/95 backdrop-blur-2xl px-2 pb-8 pt-3 max-w-[430px] mx-auto">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 nav-item-active" href="#">
+<div class="flex h-7 items-center justify-center">
+<span class="material-symbols-outlined text-[26px] active-icon">explore</span>
+</div>
+<p class="text-[10px] font-semibold leading-none tracking-tight">Explore</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 nav-item-inactive" href="#">
+<div class="flex h-7 items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">map</span>
+</div>
+<p class="text-[10px] font-semibold leading-none tracking-tight">My Trips</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 nav-item-inactive" href="#">
+<div class="flex h-7 items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">auto_awesome</span>
+</div>
+<p class="text-[10px] font-semibold leading-none tracking-tight">AI Planner</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 nav-item-inactive" href="#">
+<div class="flex h-7 items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">bookmark</span>
+</div>
+<p class="text-[10px] font-semibold leading-none tracking-tight">Saved</p>
+</a>
+</div>
+</div>
+
+</body></html>

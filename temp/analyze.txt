@@ -1,0 +1,16 @@
+﻿Analyzing lib...
+
+   info - screens\destination_detail_screen.dart:79:30 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\destination_detail_screen.dart:79:34 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\destination_plan_screen.dart:82:10 - The variable name '_HeaderBar' isn't a lowerCamelCase identifier. Try changing the name to follow the lowerCamelCase style. - non_constant_identifier_names
+   info - screens\destination_plan_screen.dart:142:35 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\smart_planner_screen.dart:98:44 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\smart_planner_screen.dart:98:48 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\splash_screen.dart:38:26 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\splash_screen.dart:38:30 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\splash_screen.dart:39:39 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\suggestions_screen.dart:77:41 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\suggestions_screen.dart:232:30 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - screens\suggestions_screen.dart:232:34 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+
+12 issues found.

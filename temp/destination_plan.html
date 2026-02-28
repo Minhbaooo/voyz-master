@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Destination Detail &amp; Plan - AIVIVU</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FF4D8D",
+                        "secondary": "#FF8C42",
+                        "accent-blue": "#4FACEF",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#050B15",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --brand-pink: #FF4D8D;
+            --brand-orange: #FF8C42;
+            --brand-blue: #4FACEF;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .hero-gradient {
+            background: linear-gradient(to bottom, rgba(5, 11, 21, 0) 50%, rgba(5, 11, 21, 1) 100%);
+        }
+        .brand-gradient {
+            background: linear-gradient(135deg, #FF4D8D 0%, #FF8C42 100%);
+        }
+        .text-brand-gradient {
+            background: linear-gradient(135deg, #FF4D8D 0%, #FF8C42 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex h-auto min-h-screen w-full max-w-[430px] mx-auto flex-col overflow-x-hidden shadow-2xl bg-background-light dark:bg-background-dark">
+<div class="relative h-[400px] w-full shrink-0 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD9mKE5z6lt8WySqOaYHRkne9ZruciDlXdjhHmrzWfnUhZ75XOFLu6Gw80QNF4mFhsiDDNMcwAwWghAoSsirumh5QIWq0D2UH2syDIvaHu3e1Yu45V8bMec3pwRzR4UB63UwtE3Pu-Gm-g3FE9EG0SVGwYKnbYrh8e4wN0v60VTsCyRXXSTYfBGf5klyAdAtNqRkKOTkMDWUoFiS2XA2CeMRBaUkHfwDg9ZLryzs1gv1hBTWXKR8bAi5myXVQVxecOqw8uMi5tmUJ8');"></div>
+<div class="absolute inset-0 hero-gradient"></div>
+<div class="absolute top-0 left-0 right-0 flex items-center justify-between p-6 pt-12">
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-md text-[#FF4D8D] border border-white/10">
+<span class="material-symbols-outlined font-bold">arrow_back</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-md text-[#FF4D8D] border border-white/10">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+</div>
+<div class="px-6 -mt-16 relative z-10">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-accent-blue text-xl">location_on</span>
+<span class="text-accent-blue font-medium text-sm tracking-wide uppercase">Ba Ria - Vung Tau</span>
+</div>
+<h1 class="text-4xl font-bold tracking-tight text-white mb-4">Côn Đảo, Vietnam</h1>
+<div class="flex gap-2 flex-wrap mb-8">
+<div class="flex h-9 items-center justify-center gap-2 rounded-full bg-white/5 border border-white/10 px-4">
+<span class="text-sm">🌿 Wellness</span>
+</div>
+<div class="flex h-9 items-center justify-center gap-2 rounded-full bg-white/5 border border-white/10 px-4">
+<span class="text-sm">🏖️ Beach</span>
+</div>
+<div class="flex h-9 items-center justify-center gap-2 rounded-full bg-white/5 border border-white/10 px-4">
+<span class="text-sm">🤿 Diving</span>
+</div>
+<div class="flex h-9 items-center justify-center gap-2 rounded-full bg-white/5 border border-white/10 px-4">
+<span class="text-sm">🌅 Scenic</span>
+</div>
+</div>
+<div class="glass rounded-2xl p-4 flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">wb_sunny</span>
+</div>
+<div>
+<p class="text-sm font-semibold">Sunny, 32°C</p>
+<p class="text-xs text-slate-400">Mar 15 - Mar 18</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-500">chevron_right</span>
+</div>
+<div class="glass rounded-2xl p-6 mb-8">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-xs font-medium text-slate-400 uppercase tracking-widest mb-1">Estimated Budget</p>
+<h2 class="text-3xl font-bold text-white">~4.2M VNĐ</h2>
+</div>
+<div class="h-8 w-8 rounded-full bg-accent-blue/10 flex items-center justify-center text-accent-blue">
+<span class="material-symbols-outlined text-lg">payments</span>
+</div>
+</div>
+<div class="h-3 w-full rounded-full bg-white/5 flex overflow-hidden mb-6">
+<div class="h-full bg-primary w-[40%]" title="Transport"></div>
+<div class="h-full bg-secondary w-[30%]" title="Stay"></div>
+<div class="h-full bg-accent-blue w-[20%]" title="Food"></div>
+<div class="h-full bg-white/20 w-[10%]" title="Activities"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">flight</span>
+<span class="text-xs text-slate-300">Transport: 1.7M</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-secondary">hotel</span>
+<span class="text-xs text-slate-300">Stay: 1.2M</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-accent-blue">restaurant</span>
+<span class="text-xs text-slate-300">Food: 0.8M</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-white/40">kayaking</span>
+<span class="text-xs text-slate-300">Activities: 0.5M</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3 mb-10">
+<button class="w-full h-14 rounded-xl brand-gradient text-white font-bold text-lg shadow-[0_4px_20px_rgba(255,77,141,0.4)] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                    Generate AI Itinerary
+                </button>
+<div class="flex gap-3">
+<button class="flex-1 h-12 rounded-xl border border-white/10 bg-white/5 text-white font-semibold flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg">bookmark</span>
+                        Save Info
+                    </button>
+<button class="flex-1 h-12 rounded-xl bg-white text-background-dark font-semibold flex items-center justify-center gap-2">
+                        Book Now
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<div class="h-28"></div>
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50">
+<div class="flex border-t border-white/10 bg-background-dark/90 backdrop-blur-xl px-4 pb-10 pt-4">
+<a class="flex flex-1 flex-col items-center justify-center gap-1.5 text-slate-500" href="#">
+<span class="material-symbols-outlined text-[26px]">explore</span>
+<p class="text-[10px] font-semibold leading-normal tracking-wide uppercase">Explore</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1.5 text-slate-500" href="#">
+<span class="material-symbols-outlined text-[26px]">map</span>
+<p class="text-[10px] font-semibold leading-normal tracking-wide uppercase">My Trips</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1.5 text-brand-gradient" href="#">
+<span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<p class="text-[10px] font-bold leading-normal tracking-wide uppercase">AI Planner</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1.5 text-slate-500" href="#">
+<span class="material-symbols-outlined text-[26px]">bookmark</span>
+<p class="text-[10px] font-semibold leading-normal tracking-wide uppercase">Saved</p>
+</a>
+</div>
+</div>
+</div>
+
+</body></html>

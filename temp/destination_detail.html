@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AIVIVU Detailed AI Itinerary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FF4D8D",
+                        "secondary": "#FF8C42",
+                        "accent-blue": "#4FACEF",
+                        "background-dark": "#050B15",
+                        "navy-deep": "#02060D",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --brand-pink: #FF4D8D;
+            --brand-orange: #FF8C42;
+            --brand-blue: #4FACEF;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-glow {
+            box-shadow: 0 0 20px rgba(255, 77, 141, 0.1);
+        }
+        .brand-gradient {
+            background: linear-gradient(135deg, #FF4D8D 0%, #FF8C42 100%);
+        }
+        .text-brand-gradient {
+            background: linear-gradient(135deg, #FF4D8D 0%, #FF8C42 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .navy-gradient {
+            background: radial-gradient(circle at top right, #0A1628 0%, #050B15 100%);
+        }
+        .timeline-line {
+            width: 2px;
+            background: linear-gradient(to bottom, #FF4D8D 0%, #FF8C42 50%, rgba(255, 255, 255, 0.1) 100%);
+        }
+        body {
+            min-height: 100dvh;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full max-w-[430px] mx-auto flex-col overflow-x-hidden shadow-2xl navy-gradient">
+<header class="pt-14 pb-4 px-6 sticky top-0 z-40 bg-background-dark/80 backdrop-blur-lg border-b border-white/5">
+<div class="flex items-center justify-between mb-4">
+<button class="flex h-10 w-10 items-center justify-center rounded-full glass text-white">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="text-center">
+<div class="flex items-center justify-center gap-1.5 mb-0.5">
+<span class="material-symbols-outlined text-primary text-lg">location_on</span>
+<h2 class="font-bold text-white tracking-tight">Côn Đảo, Vietnam</h2>
+</div>
+<p class="text-[11px] text-slate-400 font-medium uppercase tracking-widest">Mar 15 - Mar 18</p>
+</div>
+<button class="flex h-10 w-10 items-center justify-center rounded-full glass text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="flex gap-2 mt-6 overflow-x-auto pb-2 no-scrollbar">
+<button class="flex-shrink-0 px-6 py-2.5 rounded-full brand-gradient text-white font-bold text-sm shadow-lg shadow-primary/20">
+                    Day 1
+                </button>
+<button class="flex-shrink-0 px-6 py-2.5 rounded-full glass text-slate-400 font-semibold text-sm hover:text-white transition-colors">
+                    Day 2
+                </button>
+<button class="flex-shrink-0 px-6 py-2.5 rounded-full glass text-slate-400 font-semibold text-sm hover:text-white transition-colors">
+                    Day 3
+                </button>
+</div>
+</header>
+<main class="px-6 pt-6 pb-40">
+<div class="mb-8">
+<h3 class="text-2xl font-bold text-white mb-1">Day 1: Arrival &amp; Coastal Relaxation</h3>
+<p class="text-slate-400 text-sm">Experience the serene beauty of the islands.</p>
+</div>
+<div class="relative">
+<div class="absolute left-6 top-4 bottom-4 timeline-line"></div>
+<div class="space-y-6">
+<div class="relative flex items-start gap-6">
+<div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full brand-gradient text-white border-4 border-background-dark">
+<span class="material-symbols-outlined text-xl">flight_land</span>
+</div>
+<div class="flex-1 glass glass-glow p-4 rounded-2xl">
+<p class="text-xs font-bold text-primary uppercase tracking-wider mb-1">09:00 AM</p>
+<h4 class="text-white font-semibold mb-1">Arrival at Con Dao Airport</h4>
+<p class="text-slate-400 text-xs leading-relaxed">Smooth landing at VCS. Your private transfer will be waiting outside.</p>
+</div>
+</div>
+<div class="relative flex items-start gap-6">
+<div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full glass text-white border-4 border-background-dark">
+<span class="material-symbols-outlined text-xl text-secondary">hotel</span>
+</div>
+<div class="flex-1 glass p-4 rounded-2xl border-white/5">
+<p class="text-xs font-bold text-secondary uppercase tracking-wider mb-1">11:00 AM</p>
+<h4 class="text-white font-semibold mb-1">Check-in at Beachfront Resort</h4>
+<p class="text-slate-400 text-xs leading-relaxed">Drop your bags and enjoy a complimentary welcome drink with a sea view.</p>
+</div>
+</div>
+<div class="relative flex items-start gap-6">
+<div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full glass text-white border-4 border-background-dark">
+<span class="material-symbols-outlined text-xl text-accent-blue">restaurant</span>
+</div>
+<div class="flex-1 glass p-4 rounded-2xl border-white/5">
+<p class="text-xs font-bold text-accent-blue uppercase tracking-wider mb-1">01:00 PM</p>
+<h4 class="text-white font-semibold mb-1">Lunch at Local Seafood Hut</h4>
+<p class="text-slate-400 text-xs leading-relaxed">Try the famous 'Oc Vu Nang' and grilled calamari by the shore.</p>
+</div>
+</div>
+<div class="relative flex items-start gap-6">
+<div class="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full glass text-white border-4 border-background-dark">
+<span class="material-symbols-outlined text-xl text-emerald-400">beach_access</span>
+</div>
+<div class="flex-1 glass p-4 rounded-2xl border-white/5">
+<p class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">03:00 PM</p>
+<h4 class="text-white font-semibold mb-1">Sunset Beach Walk</h4>
+<p class="text-slate-400 text-xs leading-relaxed">Stroll along the white sands as the sky turns into a canvas of pink and orange.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50">
+<div class="px-6 pb-4">
+<div class="glass border-primary/20 p-4 rounded-2xl flex items-start gap-3 shadow-2xl shadow-primary/10">
+<div class="h-8 w-8 rounded-lg brand-gradient flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white text-lg">lightbulb</span>
+</div>
+<p class="text-sm text-slate-200 leading-snug">
+<span class="font-bold text-primary">Pro Tip:</span> Book your evening spa session 2 hours in advance for the best view.
+                    </p>
+</div>
+</div>
+<div class="flex border-t border-white/10 bg-background-dark/95 backdrop-blur-2xl px-4 pb-10 pt-4">
+<a class="flex flex-1 flex-col items-center justify-center gap-1.5 text-slate-500" href="#">
+<span class="material-symbols-outlined text-[26px]">explore</span>
+<p class="text-[10px] font-semibold leading-normal tracking-wide uppercase">Explore</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1.5 text-slate-500" href="#">
+<span class="material-symbols-outlined text-[26px]">map</span>
+<p class="text-[10px] font-semibold leading-normal tracking-wide uppercase">My Trips</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1.5 text-brand-gradient" href="#">
+<span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<p class="text-[10px] font-bold leading-normal tracking-wide uppercase">AI Planner</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1.5 text-slate-500" href="#">
+<span class="material-symbols-outlined text-[26px]">bookmark</span>
+<p class="text-[10px] font-semibold leading-normal tracking-wide uppercase">Saved</p>
+</a>
+</div>
+</div>
+</div>
+
+</body></html>
