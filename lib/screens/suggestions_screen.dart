@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:voyz/data/mock_data.dart';
+import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/screens/destination_detail_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
-import 'package:voyz/widgets/shared/gradient_button.dart';
 
 /// AI Travel Suggestions screen — scrollable list of AI-recommended destinations.
 class SuggestionsScreen extends StatelessWidget {
@@ -203,7 +203,7 @@ class _DestinationCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   _AiInsightBox(data: data, isTopMatch: isTopMatch),
                   const SizedBox(height: 16),
-                  _CardActions(theme: theme),
+                  _CardActions(theme: theme, data: data),
                 ],
               ),
             ),
@@ -412,16 +412,69 @@ class _AiInsightBox extends StatelessWidget {
 }
 
 class _CardActions extends StatelessWidget {
-  const _CardActions({required this.theme});
+  const _CardActions({required this.theme, required this.data});
   final ThemeData theme;
+  final Map<String, dynamic> data;
+
+  void _onAddToWishlist(BuildContext context) {
+    SavedTripsProvider.of(context).saveToWishlist(
+      name: data['name'] as String,
+      imageUrl: data['imageUrl'] as String,
+      price: data['price'] as String,
+      matchPercent: data['matchPercent'] as int,
+      rating: (data['rating'] as num).toDouble(),
+      reviewCount: data['reviewCount'] as int,
+      aiInsight: data['aiInsight'] as String,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.favorite, color: Colors.white, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '${data['name']} added to wishlist!',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: AppTheme.primaryPink.withValues(alpha: 0.9),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _onShare(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.share, color: Colors.white, size: 18),
+            SizedBox(width: 8),
+            Text('Share link copied!'),
+          ],
+        ),
+        backgroundColor: const Color(0xFF475569),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
+        // Share button
         Expanded(
           child: OutlinedButton.icon(
-            onPressed: () {},
+            onPressed: () => _onShare(context),
             icon: const Icon(Icons.share, size: 18),
             label: const Text('Share'),
             style: OutlinedButton.styleFrom(
@@ -440,13 +493,38 @@ class _CardActions extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
+        // Add to Wishlist button
         Expanded(
           flex: 2,
-          child: GradientButton(
-            label: 'Save Info',
-            icon: Icons.bookmark_add,
-            height: 44,
-            onPressed: () {},
+          child: OutlinedButton.icon(
+            onPressed: () => _onAddToWishlist(context),
+            icon: Icon(
+              Icons.favorite_outline,
+              size: 18,
+              color: theme.colorScheme.primary,
+            ),
+            label: Text(
+              'Add to Wishlist',
+              style: TextStyle(color: theme.colorScheme.primary),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: theme.colorScheme.primary,
+              side: BorderSide(
+                color: theme.colorScheme.primary.withValues(alpha: 0.3),
+              ),
+              backgroundColor: theme.colorScheme.primary.withValues(
+                alpha: 0.08,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              textStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
+              ),
+            ),
           ),
         ),
       ],

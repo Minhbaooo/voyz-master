@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:voyz/data/mock_data.dart';
+import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/screens/destination_plan_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
@@ -9,6 +10,52 @@ import 'package:voyz/widgets/shared/gradient_button.dart';
 /// Destination Detail screen — hero image, tags, weather, budget breakdown.
 class DestinationDetailScreen extends StatelessWidget {
   const DestinationDetailScreen({super.key});
+
+  void _onShare(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.share, color: Colors.white, size: 18),
+            SizedBox(width: 8),
+            Text('Share link copied!'),
+          ],
+        ),
+        backgroundColor: AppTheme.primaryPink.withValues(alpha: 0.9),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _onSaveInfo(BuildContext context) {
+    SavedTripsProvider.of(context).saveFullTrip(
+      name: MockData.detailName,
+      imageUrl: MockData.detailHeroImageUrl,
+      price: MockData.detailBudget,
+      matchPercent: 98,
+      rating: 4.5,
+      reviewCount: 120,
+      aiInsight: 'Perfect for your wellness budget. Dry season now.',
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.bookmark_added, color: Colors.white, size: 18),
+            SizedBox(width: 8),
+            Expanded(child: Text('Trip info saved! Check your Saved tab.')),
+          ],
+        ),
+        backgroundColor: const Color(0xFF10B981),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +66,12 @@ class DestinationDetailScreen extends StatelessWidget {
         children: [
           CustomScrollView(
             slivers: [
-              SliverToBoxAdapter(child: _HeroSection(theme: theme)),
+              SliverToBoxAdapter(
+                child: _HeroSection(
+                  theme: theme,
+                  onShare: () => _onShare(context),
+                ),
+              ),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -42,7 +94,10 @@ class DestinationDetailScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       _BudgetCard(theme: theme),
                       const SizedBox(height: 32),
-                      _ActionButtons(theme: theme),
+                      _ActionButtons(
+                        theme: theme,
+                        onSaveInfo: () => _onSaveInfo(context),
+                      ),
                       const SizedBox(height: 120),
                     ],
                   ),
@@ -63,8 +118,9 @@ class DestinationDetailScreen extends StatelessWidget {
 }
 
 class _HeroSection extends StatelessWidget {
-  const _HeroSection({required this.theme});
+  const _HeroSection({required this.theme, required this.onShare});
   final ThemeData theme;
+  final VoidCallback onShare;
 
   @override
   Widget build(BuildContext context) {
@@ -89,18 +145,28 @@ class _HeroSection extends StatelessWidget {
               ),
             ),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _CircleBtn(
-                    icon: Icons.arrow_back,
-                    onTap: () => Navigator.of(context).maybePop(),
-                  ),
-                  _CircleBtn(icon: Icons.bookmark, onTap: () {}),
-                ],
+          // Back + Share buttons at the very top
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _CircleBtn(
+                      icon: Icons.arrow_back,
+                      onTap: () => Navigator.of(context).maybePop(),
+                    ),
+                    _CircleBtn(icon: Icons.share, onTap: onShare),
+                  ],
+                ),
               ),
             ),
           ),
@@ -360,8 +426,9 @@ class _BudgetCard extends StatelessWidget {
 }
 
 class _ActionButtons extends StatelessWidget {
-  const _ActionButtons({required this.theme});
+  const _ActionButtons({required this.theme, required this.onSaveInfo});
   final ThemeData theme;
+  final VoidCallback onSaveInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -382,7 +449,7 @@ class _ActionButtons extends StatelessWidget {
               child: _OutlineBtn(
                 label: 'Save Info',
                 icon: Icons.bookmark,
-                onPressed: () {},
+                onPressed: onSaveInfo,
               ),
             ),
             const SizedBox(width: 12),
