@@ -29,46 +29,6 @@ class SuggestionsScreen extends StatelessWidget {
               // ── Header ──
               _Header(theme: theme),
 
-              // ── Search Summary Pill ──
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.spacingMd,
-                  vertical: AppTheme.spacingSm,
-                ),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.03),
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.1),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        color: theme.colorScheme.primary,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        MockData.suggestionsSearchSummary,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white.withValues(alpha: 0.7),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
               // ── Destination Cards ──
               Expanded(
                 child: ListView.separated(
@@ -144,7 +104,7 @@ class _Header extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.auto_fix_high, color: theme.colorScheme.primary),
+            icon: Icon(Icons.refresh, color: theme.colorScheme.primary),
           ),
         ],
       ),
@@ -255,25 +215,6 @@ class _CardImage extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
-              ),
-            ),
-          ),
-          // Favorite button
-          Positioned(
-            top: 12,
-            right: 12,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.15),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-              ),
-              child: const Icon(
-                Icons.favorite_outline,
-                color: Colors.white,
-                size: 20,
               ),
             ),
           ),
