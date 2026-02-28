@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:voyz/data/mock_data.dart';
+import 'package:voyz/data/saved_trips_provider.dart';
+import 'package:voyz/models/itinerary_plan.dart';
 import 'package:voyz/screens/saved_screen.dart';
 import 'package:voyz/screens/smart_planner_screen.dart';
 import 'package:voyz/screens/suggestions_screen.dart';
+import 'package:voyz/services/gemini_service.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
 import 'package:voyz/widgets/shared/glass_card.dart';
 
 /// Destination Plan screen — day-by-day itinerary timeline.
 class DestinationPlanScreen extends StatefulWidget {
-  const DestinationPlanScreen({super.key});
+  const DestinationPlanScreen({
+    super.key,
+    required this.destinationName,
+    required this.dateRange,
+  });
+
+  final String destinationName;
+  final String dateRange;
 
   @override
   State<DestinationPlanScreen> createState() => _DestinationPlanScreenState();
@@ -17,6 +26,53 @@ class DestinationPlanScreen extends StatefulWidget {
 
 class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
   int _selectedDay = 0;
+  ItineraryPlan? _plan;
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadPlan());
+  }
+
+  Future<void> _loadPlan() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final trip = SavedTripsProvider.of(context).currentTrip;
+      // Calculate number of days from date range or default to 3
+      int numDays = 3;
+      if (trip.departDate != null && trip.returnDate != null) {
+        numDays = trip.returnDate!.difference(trip.departDate!).inDays;
+        if (numDays < 1) numDays = 1;
+        if (numDays > 7) numDays = 7; // Cap at 7 days
+      }
+
+      final plan = await GeminiService.instance.getItineraryPlan(
+        widget.destinationName,
+        numDays,
+        trip,
+        limit: 4,
+      );
+      if (mounted) {
+        setState(() {
+          _plan = plan;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   void _onNavTap(int index) {
     switch (index) {
@@ -45,6 +101,100 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: AppTheme.backgroundDark,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(color: theme.colorScheme.primary),
+              const SizedBox(height: 16),
+              Text(
+                'AI đang lên lịch trình...',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_error != null || _plan == null) {
+      return Scaffold(
+        backgroundColor: AppTheme.backgroundDark,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: theme.colorScheme.error,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Không thể tạo lịch trình',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _error ?? 'Lỗi không xác định',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      icon: const Icon(Icons.arrow_back),
+                      label: const Text('Quay lại'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    OutlinedButton.icon(
+                      onPressed: _loadPlan,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Thử lại'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: theme.colorScheme.primary,
+                        side: BorderSide(
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.3,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    final plan = _plan!;
+    final currentDay = _selectedDay < plan.days.length
+        ? plan.days[_selectedDay]
+        : null;
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
       body: Container(
@@ -58,41 +208,42 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              _buildHeaderBar(theme: theme),
+              _buildHeaderBar(theme: theme, plan: plan),
               Expanded(
                 child: Stack(
                   children: [
-                    SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(24, 16, 24, 140),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            MockData.dayTitle,
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                    if (currentDay != null)
+                      SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 140),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              currentDay.title,
+                              style: theme.textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            MockData.daySubtitle,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF94A3B8),
+                            const SizedBox(height: 4),
+                            Text(
+                              currentDay.subtitle,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF94A3B8),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 24),
-                          _Timeline(),
-                        ],
+                            const SizedBox(height: 24),
+                            _Timeline(items: currentDay.items),
+                          ],
+                        ),
                       ),
-                    ),
                     // Pro tip card
                     Positioned(
                       left: 16,
                       right: 16,
                       bottom: 72,
-                      child: _ProTipCard(theme: theme),
+                      child: _ProTipCard(theme: theme, tip: plan.proTip),
                     ),
                   ],
                 ),
@@ -105,7 +256,10 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
     );
   }
 
-  Widget _buildHeaderBar({required ThemeData theme}) {
+  Widget _buildHeaderBar({
+    required ThemeData theme,
+    required ItineraryPlan plan,
+  }) {
     return Column(
       children: [
         Padding(
@@ -115,10 +269,7 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
             children: [
               _CircleBtn(
                 icon: Icons.arrow_back,
-                onTap: () {
-                  // If DestinationDetailScreen is always the previous route, pop will go back to it
-                  Navigator.of(context).pop();
-                },
+                onTap: () => Navigator.of(context).pop(),
               ),
               Column(
                 children: [
@@ -131,9 +282,9 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
                         size: 18,
                       ),
                       const SizedBox(width: 4),
-                      const Text(
-                        'Côn Đảo, Vietnam',
-                        style: TextStyle(
+                      Text(
+                        plan.destinationName,
+                        style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
@@ -142,7 +293,7 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'MAR 15 - MAR 18',
+                    plan.dateRange.toUpperCase(),
                     style: TextStyle(
                       fontSize: 11,
                       color: Colors.white.withValues(alpha: 0.4),
@@ -152,9 +303,7 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
                   ),
                 ],
               ),
-              const SizedBox(
-                width: 40,
-              ), // Placeholder to keep the title visually centered
+              const SizedBox(width: 40),
             ],
           ),
         ),
@@ -165,7 +314,7 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            itemCount: MockData.dayTabs.length,
+            itemCount: plan.days.length,
             separatorBuilder: (ctx, i) => const SizedBox(width: 8),
             itemBuilder: (_, i) {
               final isActive = i == _selectedDay;
@@ -197,7 +346,7 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    MockData.dayTabs[i],
+                    'Day ${plan.days[i].dayNumber}',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
@@ -216,10 +365,9 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
 }
 
 class _CircleBtn extends StatelessWidget {
-  const _CircleBtn({required this.icon, this.onTap, this.color});
+  const _CircleBtn({required this.icon, this.onTap});
   final IconData icon;
   final VoidCallback? onTap;
-  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +381,7 @@ class _CircleBtn extends StatelessWidget {
           color: Colors.white.withValues(alpha: 0.05),
           border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
         ),
-        child: Icon(icon, color: color ?? Colors.white, size: 22),
+        child: Icon(icon, color: Colors.white, size: 22),
       ),
     );
   }
@@ -242,6 +390,9 @@ class _CircleBtn extends StatelessWidget {
 // ── Timeline ────────────────────────────────────────────────────────────
 
 class _Timeline extends StatelessWidget {
+  const _Timeline({required this.items});
+  final List<ItineraryItem> items;
+
   static const _iconColors = [
     AppTheme.primaryPink,
     AppTheme.secondaryOrange,
@@ -259,9 +410,9 @@ class _Timeline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: List.generate(MockData.itineraryItems.length, (i) {
-        final item = MockData.itineraryItems[i];
-        final isFirst = item['isFirst'] as bool;
+      children: List.generate(items.length, (i) {
+        final item = items[i];
+        final isFirst = i == 0;
         final color = _iconColors[i % _iconColors.length];
 
         return IntrinsicHeight(
@@ -290,12 +441,12 @@ class _Timeline extends StatelessWidget {
                         ),
                       ),
                       child: Icon(
-                        _iconMap[item['icon']] ?? Icons.circle,
+                        _iconMap[item.icon] ?? Icons.circle,
                         color: isFirst ? Colors.white : color,
                         size: 20,
                       ),
                     ),
-                    if (i < MockData.itineraryItems.length - 1)
+                    if (i < items.length - 1)
                       Expanded(
                         child: Container(
                           width: 2,
@@ -323,7 +474,7 @@ class _Timeline extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item['time'] as String,
+                          item.time,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -333,7 +484,7 @@ class _Timeline extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          item['title'] as String,
+                          item.title,
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -342,7 +493,7 @@ class _Timeline extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          item['description'] as String,
+                          item.description,
                           style: TextStyle(
                             fontSize: 12,
                             height: 1.5,
@@ -365,8 +516,9 @@ class _Timeline extends StatelessWidget {
 // ── Pro Tip Card ────────────────────────────────────────────────────────
 
 class _ProTipCard extends StatelessWidget {
-  const _ProTipCard({required this.theme});
+  const _ProTipCard({required this.theme, required this.tip});
   final ThemeData theme;
+  final String tip;
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +552,7 @@ class _ProTipCard extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
-                    text: MockData.proTip,
+                    text: tip,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.8),
                     ),

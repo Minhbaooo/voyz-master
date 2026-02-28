@@ -147,7 +147,8 @@ class _ItemListView extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => const DestinationDetailScreen(),
+                builder: (_) =>
+                    DestinationDetailScreen(destinationName: items[index].name),
               ),
             );
           },

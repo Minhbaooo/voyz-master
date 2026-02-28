@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:voyz/data/mock_data.dart';
 import 'package:voyz/data/saved_trips_provider.dart';
+import 'package:voyz/models/destination_suggestion.dart';
 import 'package:voyz/screens/destination_detail_screen.dart';
 import 'package:voyz/screens/saved_screen.dart';
 import 'package:voyz/screens/smart_planner_screen.dart';
+import 'package:voyz/services/gemini_service.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
 
@@ -17,6 +18,44 @@ class SuggestionsScreen extends StatefulWidget {
 }
 
 class _SuggestionsScreenState extends State<SuggestionsScreen> {
+  List<DestinationSuggestion> _suggestions = [];
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadSuggestions());
+  }
+
+  Future<void> _loadSuggestions() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final trip = SavedTripsProvider.of(context).currentTrip;
+      final results = await GeminiService.instance.getSuggestions(
+        trip,
+        limit: 10,
+      );
+      if (mounted) {
+        setState(() {
+          _suggestions = results;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   void _onNavTap(int index) {
     switch (index) {
       case 0:
@@ -54,29 +93,10 @@ class _SuggestionsScreenState extends State<SuggestionsScreen> {
           child: Column(
             children: [
               // ── Header ──
-              _Header(theme: theme),
+              _Header(theme: theme, onRefresh: _loadSuggestions),
 
-              // ── Destination Cards ──
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-                  itemCount: MockData.destinations.length,
-                  separatorBuilder: (_, i) => const SizedBox(height: 20),
-                  itemBuilder: (context, index) {
-                    final dest = MockData.destinations[index];
-                    return _DestinationCard(
-                      data: dest,
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const DestinationDetailScreen(),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
+              // ── Content ──
+              Expanded(child: _buildBody(theme)),
             ],
           ),
         ),
@@ -84,13 +104,112 @@ class _SuggestionsScreenState extends State<SuggestionsScreen> {
       bottomSheet: BottomNavBar(currentIndex: 1, onTap: _onNavTap),
     );
   }
+
+  Widget _buildBody(ThemeData theme) {
+    if (_isLoading) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(color: theme.colorScheme.primary),
+            const SizedBox(height: 16),
+            Text(
+              'AI đang tìm kiếm điểm đến...',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.6),
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: theme.colorScheme.error,
+                size: 48,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Không thể tải gợi ý',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _error!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.5),
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 24),
+              OutlinedButton.icon(
+                onPressed: _loadSuggestions,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Thử lại'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: theme.colorScheme.primary,
+                  side: BorderSide(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_suggestions.isEmpty) {
+      return Center(
+        child: Text(
+          'Không tìm thấy gợi ý nào.',
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+      itemCount: _suggestions.length,
+      separatorBuilder: (_, i) => const SizedBox(height: 20),
+      itemBuilder: (context, index) {
+        final dest = _suggestions[index];
+        return _DestinationCard(
+          data: dest.toMap(),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) =>
+                    DestinationDetailScreen(destinationName: dest.name),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }
 
 // ── Header ──────────────────────────────────────────────────────────────
 
 class _Header extends StatelessWidget {
-  const _Header({required this.theme});
+  const _Header({required this.theme, required this.onRefresh});
   final ThemeData theme;
+  final VoidCallback onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -101,8 +220,6 @@ class _Header extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () {
-              // Instead of maybePop, push back/replace with SmartPlannerScreen
-              // to ensure we load the data and nav state correctly.
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const SmartPlannerScreen()),
                 (route) => false,
@@ -137,7 +254,7 @@ class _Header extends StatelessWidget {
             ],
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: onRefresh,
             icon: Icon(Icons.refresh, color: theme.colorScheme.primary),
           ),
         ],

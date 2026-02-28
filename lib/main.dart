@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/screens/splash_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   runApp(const VoyzApp());
 }
 

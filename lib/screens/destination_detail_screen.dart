@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:voyz/data/mock_data.dart';
 import 'package:voyz/data/saved_trips_provider.dart';
+import 'package:voyz/models/destination_detail.dart';
 import 'package:voyz/screens/destination_plan_screen.dart';
 import 'package:voyz/screens/saved_screen.dart';
 import 'package:voyz/screens/smart_planner_screen.dart';
 import 'package:voyz/screens/suggestions_screen.dart';
+import 'package:voyz/services/gemini_service.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
 import 'package:voyz/widgets/shared/gradient_button.dart';
 
 /// Destination Detail screen — hero image, tags, weather, budget breakdown.
 class DestinationDetailScreen extends StatefulWidget {
-  const DestinationDetailScreen({super.key});
+  const DestinationDetailScreen({super.key, required this.destinationName});
+
+  final String destinationName;
 
   @override
   State<DestinationDetailScreen> createState() =>
@@ -20,6 +23,44 @@ class DestinationDetailScreen extends StatefulWidget {
 }
 
 class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
+  DestinationDetail? _detail;
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadDetail());
+  }
+
+  Future<void> _loadDetail() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final trip = SavedTripsProvider.of(context).currentTrip;
+      final detail = await GeminiService.instance.getDestinationDetail(
+        widget.destinationName,
+        trip,
+      );
+      if (mounted) {
+        setState(() {
+          _detail = detail;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   void _onNavTap(int index) {
     switch (index) {
       case 0:
@@ -62,10 +103,12 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
   }
 
   void _onSaveInfo(BuildContext context) {
+    if (_detail == null) return;
+    final d = _detail!;
     final added = SavedTripsProvider.of(context).saveFullTrip(
-      name: MockData.detailName,
-      imageUrl: MockData.detailHeroImageUrl,
-      price: MockData.detailBudget,
+      name: d.name,
+      imageUrl: d.imageUrl,
+      price: d.totalBudget,
       matchPercent: 98,
       rating: 4.5,
       reviewCount: 120,
@@ -86,7 +129,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
               child: Text(
                 added
                     ? 'Trip info saved! Check your Saved tab.'
-                    : '${MockData.detailName} is already saved!',
+                    : '${d.name} is already saved!',
               ),
             ),
           ],
@@ -104,6 +147,98 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: AppTheme.backgroundDark,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(color: theme.colorScheme.primary),
+              const SizedBox(height: 16),
+              Text(
+                'Đang tải thông tin chi tiết...',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_error != null || _detail == null) {
+      return Scaffold(
+        backgroundColor: AppTheme.backgroundDark,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: theme.colorScheme.error,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Không thể tải thông tin',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _error ?? 'Lỗi không xác định',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      icon: const Icon(Icons.arrow_back),
+                      label: const Text('Quay lại'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    OutlinedButton.icon(
+                      onPressed: _loadDetail,
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Thử lại'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: theme.colorScheme.primary,
+                        side: BorderSide(
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.3,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    final d = _detail!;
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
       body: Stack(
@@ -113,6 +248,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
               SliverToBoxAdapter(
                 child: _HeroSection(
                   theme: theme,
+                  imageUrl: d.imageUrl,
                   onShare: () => _onShare(context),
                 ),
               ),
@@ -122,25 +258,35 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _LocationSubtitle(theme: theme),
+                      _LocationSubtitle(theme: theme, location: d.location),
                       const SizedBox(height: 8),
                       Text(
-                        MockData.detailName,
+                        d.name,
                         style: theme.textTheme.headlineLarge?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _TagsRow(),
+                      _TagsRow(tags: d.tags),
                       const SizedBox(height: 24),
-                      _WeatherCard(theme: theme),
+                      _WeatherCard(
+                        theme: theme,
+                        weather: d.weather,
+                        dateRange: d.dateRange,
+                      ),
                       const SizedBox(height: 16),
-                      _BudgetCard(theme: theme),
+                      _BudgetCard(
+                        theme: theme,
+                        totalBudget: d.totalBudget,
+                        breakdown: d.budgetBreakdown,
+                      ),
                       const SizedBox(height: 32),
                       _ActionButtons(
                         theme: theme,
                         onSaveInfo: () => _onSaveInfo(context),
+                        destinationName: d.name,
+                        dateRange: d.dateRange,
                       ),
                       const SizedBox(height: 120),
                     ],
@@ -162,8 +308,13 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
 }
 
 class _HeroSection extends StatelessWidget {
-  const _HeroSection({required this.theme, required this.onShare});
+  const _HeroSection({
+    required this.theme,
+    required this.imageUrl,
+    required this.onShare,
+  });
   final ThemeData theme;
+  final String imageUrl;
   final VoidCallback onShare;
 
   @override
@@ -174,7 +325,7 @@ class _HeroSection extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           CachedNetworkImage(
-            imageUrl: MockData.detailHeroImageUrl,
+            imageUrl: imageUrl,
             fit: BoxFit.cover,
             errorWidget: (ctx, url, err) =>
                 Container(color: const Color(0xFF1E293B)),
@@ -189,7 +340,6 @@ class _HeroSection extends StatelessWidget {
               ),
             ),
           ),
-          // Back + Share buttons at the very top
           Positioned(
             top: 0,
             left: 0,
@@ -244,8 +394,9 @@ class _CircleBtn extends StatelessWidget {
 }
 
 class _LocationSubtitle extends StatelessWidget {
-  const _LocationSubtitle({required this.theme});
+  const _LocationSubtitle({required this.theme, required this.location});
   final ThemeData theme;
+  final String location;
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +405,7 @@ class _LocationSubtitle extends StatelessWidget {
         Icon(Icons.location_on, color: theme.colorScheme.tertiary, size: 20),
         const SizedBox(width: 4),
         Text(
-          MockData.detailLocation.toUpperCase(),
+          location.toUpperCase(),
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
@@ -268,12 +419,15 @@ class _LocationSubtitle extends StatelessWidget {
 }
 
 class _TagsRow extends StatelessWidget {
+  const _TagsRow({required this.tags});
+  final List<String> tags;
+
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: MockData.detailTags
+      children: tags
           .map(
             (tag) => Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -294,8 +448,14 @@ class _TagsRow extends StatelessWidget {
 }
 
 class _WeatherCard extends StatelessWidget {
-  const _WeatherCard({required this.theme});
+  const _WeatherCard({
+    required this.theme,
+    required this.weather,
+    required this.dateRange,
+  });
   final ThemeData theme;
+  final String weather;
+  final String dateRange;
 
   @override
   Widget build(BuildContext context) {
@@ -326,16 +486,16 @@ class _WeatherCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Sunny, 32°C',
-                  style: TextStyle(
+                Text(
+                  weather,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
                 ),
                 Text(
-                  MockData.detailDateRange,
+                  dateRange,
                   style: const TextStyle(
                     fontSize: 12,
                     color: Color(0xFF94A3B8),
@@ -352,8 +512,14 @@ class _WeatherCard extends StatelessWidget {
 }
 
 class _BudgetCard extends StatelessWidget {
-  const _BudgetCard({required this.theme});
+  const _BudgetCard({
+    required this.theme,
+    required this.totalBudget,
+    required this.breakdown,
+  });
   final ThemeData theme;
+  final String totalBudget;
+  final List<BudgetItem> breakdown;
 
   static const _colors = [
     AppTheme.primaryPink,
@@ -396,9 +562,9 @@ class _BudgetCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    '~4.2M VNĐ',
-                    style: TextStyle(
+                  Text(
+                    totalBudget,
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
@@ -427,11 +593,11 @@ class _BudgetCard extends StatelessWidget {
             child: SizedBox(
               height: 12,
               child: Row(
-                children: List.generate(MockData.budgetBreakdown.length, (i) {
-                  final item = MockData.budgetBreakdown[i];
+                children: List.generate(breakdown.length, (i) {
+                  final item = breakdown[i];
                   return Expanded(
-                    flex: ((item['fraction'] as double) * 100).round(),
-                    child: Container(color: _colors[i]),
+                    flex: (item.fraction * 100).round(),
+                    child: Container(color: _colors[i % _colors.length]),
                   );
                 }),
               ),
@@ -441,19 +607,19 @@ class _BudgetCard extends StatelessWidget {
           Wrap(
             spacing: 24,
             runSpacing: 12,
-            children: List.generate(MockData.budgetBreakdown.length, (i) {
-              final item = MockData.budgetBreakdown[i];
+            children: List.generate(breakdown.length, (i) {
+              final item = breakdown[i];
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    _icons[item['icon']] ?? Icons.circle,
+                    _icons[item.icon] ?? Icons.circle,
                     size: 14,
-                    color: _colors[i],
+                    color: _colors[i % _colors.length],
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    '${item['label']}: ${item['amount']}',
+                    '${item.label}: ${item.amount}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.white.withValues(alpha: 0.7),
@@ -470,9 +636,16 @@ class _BudgetCard extends StatelessWidget {
 }
 
 class _ActionButtons extends StatelessWidget {
-  const _ActionButtons({required this.theme, required this.onSaveInfo});
+  const _ActionButtons({
+    required this.theme,
+    required this.onSaveInfo,
+    required this.destinationName,
+    required this.dateRange,
+  });
   final ThemeData theme;
   final VoidCallback onSaveInfo;
+  final String destinationName;
+  final String dateRange;
 
   @override
   Widget build(BuildContext context) {
@@ -483,7 +656,12 @@ class _ActionButtons extends StatelessWidget {
           icon: Icons.auto_awesome,
           height: 56,
           onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const DestinationPlanScreen()),
+            MaterialPageRoute(
+              builder: (_) => DestinationPlanScreen(
+                destinationName: destinationName,
+                dateRange: dateRange,
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 12),
