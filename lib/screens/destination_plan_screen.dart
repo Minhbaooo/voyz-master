@@ -115,7 +115,10 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
             children: [
               _CircleBtn(
                 icon: Icons.arrow_back,
-                onTap: () => Navigator.of(context).maybePop(),
+                onTap: () {
+                  // If DestinationDetailScreen is always the previous route, pop will go back to it
+                  Navigator.of(context).pop();
+                },
               ),
               Column(
                 children: [
@@ -149,11 +152,9 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
                   ),
                 ],
               ),
-              _CircleBtn(
-                icon: Icons.favorite,
-                onTap: () {},
-                color: theme.colorScheme.primary,
-              ),
+              const SizedBox(
+                width: 40,
+              ), // Placeholder to keep the title visually centered
             ],
           ),
         ),

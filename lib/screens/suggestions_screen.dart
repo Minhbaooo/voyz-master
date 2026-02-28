@@ -100,7 +100,14 @@ class _Header extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            onPressed: () => Navigator.of(context).maybePop(),
+            onPressed: () {
+              // Instead of maybePop, push back/replace with SmartPlannerScreen
+              // to ensure we load the data and nav state correctly.
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const SmartPlannerScreen()),
+                (route) => false,
+              );
+            },
             icon: const Icon(Icons.arrow_back, color: Colors.white),
           ),
           Column(

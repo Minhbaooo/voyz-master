@@ -36,6 +36,28 @@ class _SmartPlannerScreenState extends State<SmartPlannerScreen> {
   @override
   void initState() {
     super.initState();
+    // Delay slightly so context is ready for provider
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final trip = SavedTripsProvider.of(context).currentTrip;
+      setState(() {
+        _destinationController.text = trip.destination;
+        _departDate = trip.departDate;
+        _returnDate = trip.returnDate;
+        _budgetController.text = trip.budget;
+        _participantsController.text = trip.participants;
+        _ageRangeController.text = trip.ageRange;
+        _notesController.text = trip.additionalNotes;
+        _promptController.text = trip.aiPrompt;
+
+        // Restore interests
+        _selectedInterests = List.filled(MockData.interests.length, false);
+        for (int i = 0; i < MockData.interests.length; i++) {
+          if (trip.selectedInterests.contains(MockData.interests[i])) {
+            _selectedInterests[i] = true;
+          }
+        }
+      });
+    });
     _selectedInterests = List.from(MockData.interestsSelected);
   }
 
@@ -92,18 +114,40 @@ class _SmartPlannerScreenState extends State<SmartPlannerScreen> {
     return DateFormat('dd/MM/yyyy').format(date);
   }
 
+  bool _validateInput() {
+    if (_destinationController.text.trim().isEmpty ||
+        _departDate == null ||
+        _returnDate == null ||
+        _budgetController.text.trim().isEmpty ||
+        _participantsController.text.trim().isEmpty ||
+        _ageRangeController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please fill in all required info'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return false;
+    }
+    return true;
+  }
+
   void _onNavTap(int index) {
     switch (index) {
       case 0:
         // Already on AI Planner
         break;
       case 1:
+        if (!_validateInput()) return;
+        _saveCurrentState();
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const SuggestionsScreen()),
           (route) => false,
         );
         break;
       case 2:
+        _saveCurrentState();
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const SavedScreen()),
           (route) => false,
@@ -112,14 +156,11 @@ class _SmartPlannerScreenState extends State<SmartPlannerScreen> {
     }
   }
 
-  void _onGetSuggestions() {
-    // Collect selected interests
+  void _saveCurrentState() {
     final selected = <String>[];
     for (int i = 0; i < MockData.interests.length; i++) {
       if (_selectedInterests[i]) selected.add(MockData.interests[i]);
     }
-
-    // Push data to provider
     SavedTripsProvider.of(context).updateTrip(
       TripData(
         destination: _destinationController.text,
@@ -133,6 +174,11 @@ class _SmartPlannerScreenState extends State<SmartPlannerScreen> {
         selectedInterests: selected,
       ),
     );
+  }
+
+  void _onGetSuggestions() {
+    if (!_validateInput()) return;
+    _saveCurrentState();
 
     Navigator.of(
       context,

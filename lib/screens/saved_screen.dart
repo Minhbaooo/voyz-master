@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/data/trip_data.dart';
+import 'package:voyz/screens/destination_detail_screen.dart';
 import 'package:voyz/screens/smart_planner_screen.dart';
 import 'package:voyz/screens/suggestions_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
@@ -15,23 +16,7 @@ class SavedScreen extends StatefulWidget {
   State<SavedScreen> createState() => _SavedScreenState();
 }
 
-class _SavedScreenState extends State<SavedScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() => setState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
+class _SavedScreenState extends State<SavedScreen> {
   void _onNavTap(int index) {
     switch (index) {
       case 0:
@@ -56,9 +41,6 @@ class _SavedScreenState extends State<SavedScreen>
   Widget build(BuildContext context) {
     final provider = SavedTripsProvider.of(context);
     final allItems = provider.savedItems;
-    final wishlistItems = allItems
-        .where((item) => item.tripData == null)
-        .toList();
 
     return Scaffold(
       body: Container(
@@ -73,20 +55,11 @@ class _SavedScreenState extends State<SavedScreen>
           child: Column(
             children: [
               // ── Header ──
-              _Header(tabController: _tabController),
+              const _Header(),
 
               // ── Content ──
               Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _ItemListView(items: allItems, label: 'saved items'),
-                    _ItemListView(
-                      items: wishlistItems,
-                      label: 'wishlist items',
-                    ),
-                  ],
-                ),
+                child: _ItemListView(items: allItems, label: 'saved items'),
               ),
             ],
           ),
@@ -100,94 +73,45 @@ class _SavedScreenState extends State<SavedScreen>
 // ── Header ────────────────────────────────────────────────────────────────
 
 class _Header extends StatelessWidget {
-  const _Header({required this.tabController});
-  final TabController tabController;
+  const _Header();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const SizedBox(width: 48), // balance placeholder
+          Column(
             children: [
-              IconButton(
-                onPressed: () => Navigator.of(context).maybePop(),
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-              ),
-              Column(
-                children: [
-                  ShaderMask(
-                    shaderCallback: (bounds) =>
-                        AppTheme.brandGradient.createShader(bounds),
-                    child: const Text(
-                      'AIVIVU',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 3,
-                        color: Colors.white,
-                      ),
-                    ),
+              ShaderMask(
+                shaderCallback: (bounds) =>
+                    AppTheme.brandGradient.createShader(bounds),
+                child: const Text(
+                  'AIVIVU',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 3,
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 2),
-                  const Text(
-                    'Saved & Wishlist',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 48), // balance the back button
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        // ── Tab Bar ──
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-          ),
-          child: TabBar(
-            controller: tabController,
-            indicator: BoxDecoration(
-              gradient: AppTheme.brandGradient,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: AppTheme.primaryPink.withValues(alpha: 0.25),
-                  blurRadius: 12,
                 ),
-              ],
-            ),
-            indicatorSize: TabBarIndicatorSize.tab,
-            dividerColor: Colors.transparent,
-            labelColor: Colors.white,
-            unselectedLabelColor: const Color(0xFF94A3B8),
-            labelStyle: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.5,
-            ),
-            unselectedLabelStyle: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-            tabs: const [
-              Tab(text: 'All Saved'),
-              Tab(text: 'Wishlist'),
+              ),
+              const SizedBox(height: 2),
+              const Text(
+                'Saved',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
             ],
           ),
-        ),
-        const SizedBox(height: 12),
-      ],
+          const SizedBox(width: 48), // balance placeholder
+        ],
+      ),
     );
   }
 }
@@ -210,7 +134,16 @@ class _ItemListView extends StatelessWidget {
       itemCount: items.length,
       separatorBuilder: (_, _) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
-        return _SavedItemCard(item: items[index]);
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const DestinationDetailScreen(),
+              ),
+            );
+          },
+          child: _SavedItemCard(item: items[index]),
+        );
       },
     );
   }
