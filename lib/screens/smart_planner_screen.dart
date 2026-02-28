@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:voyz/data/mock_data.dart';
 import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/data/trip_data.dart';
+import 'package:voyz/screens/saved_screen.dart';
 import 'package:voyz/screens/suggestions_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
@@ -89,6 +90,26 @@ class _SmartPlannerScreenState extends State<SmartPlannerScreen> {
   String _formatDate(DateTime? date) {
     if (date == null) return 'Add date';
     return DateFormat('dd/MM/yyyy').format(date);
+  }
+
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        // Already on AI Planner
+        break;
+      case 1:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SuggestionsScreen()),
+          (route) => false,
+        );
+        break;
+      case 2:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SavedScreen()),
+          (route) => false,
+        );
+        break;
+    }
   }
 
   void _onGetSuggestions() {
@@ -461,7 +482,7 @@ class _SmartPlannerScreenState extends State<SmartPlannerScreen> {
           ),
         ),
       ),
-      bottomSheet: BottomNavBar(currentIndex: 2, onTap: (_) {}),
+      bottomSheet: BottomNavBar(currentIndex: 0, onTap: _onNavTap),
     );
   }
 

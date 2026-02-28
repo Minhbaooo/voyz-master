@@ -154,9 +154,8 @@ class MockData {
 
   // ── Bottom Nav ────────────────────────────────────────────────────────
   static const List<Map<String, String>> navItems = [
-    {'label': 'Explore', 'icon': 'explore'},
-    {'label': 'My Trips', 'icon': 'map'},
     {'label': 'AI Planner', 'icon': 'auto_awesome'},
+    {'label': 'Explore', 'icon': 'explore'},
     {'label': 'Saved', 'icon': 'bookmark'},
   ];
 }

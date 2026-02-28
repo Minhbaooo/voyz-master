@@ -82,6 +82,11 @@ class SavedTripsProviderState extends State<SavedTripsProvider> {
     });
   }
 
+  /// Remove an item from saved list.
+  void removeSavedItem(SavedItem item) {
+    setState(() => _savedItems.remove(item));
+  }
+
   @override
   Widget build(BuildContext context) => widget.child;
 }

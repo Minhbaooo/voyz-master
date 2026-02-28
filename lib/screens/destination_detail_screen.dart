@@ -3,13 +3,45 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:voyz/data/mock_data.dart';
 import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/screens/destination_plan_screen.dart';
+import 'package:voyz/screens/saved_screen.dart';
+import 'package:voyz/screens/smart_planner_screen.dart';
+import 'package:voyz/screens/suggestions_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
 import 'package:voyz/widgets/shared/gradient_button.dart';
 
 /// Destination Detail screen — hero image, tags, weather, budget breakdown.
-class DestinationDetailScreen extends StatelessWidget {
+class DestinationDetailScreen extends StatefulWidget {
   const DestinationDetailScreen({super.key});
+
+  @override
+  State<DestinationDetailScreen> createState() =>
+      _DestinationDetailScreenState();
+}
+
+class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SmartPlannerScreen()),
+          (route) => false,
+        );
+        break;
+      case 1:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SuggestionsScreen()),
+          (route) => false,
+        );
+        break;
+      case 2:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SavedScreen()),
+          (route) => false,
+        );
+        break;
+    }
+  }
 
   void _onShare(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -109,7 +141,7 @@ class DestinationDetailScreen extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: BottomNavBar(currentIndex: 2, onTap: (_) {}),
+            child: BottomNavBar(currentIndex: 1, onTap: _onNavTap),
           ),
         ],
       ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voyz/data/mock_data.dart';
+import 'package:voyz/screens/saved_screen.dart';
+import 'package:voyz/screens/smart_planner_screen.dart';
+import 'package:voyz/screens/suggestions_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
 import 'package:voyz/widgets/shared/glass_card.dart';
@@ -14,6 +17,29 @@ class DestinationPlanScreen extends StatefulWidget {
 
 class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
   int _selectedDay = 0;
+
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SmartPlannerScreen()),
+          (route) => false,
+        );
+        break;
+      case 1:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SuggestionsScreen()),
+          (route) => false,
+        );
+        break;
+      case 2:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SavedScreen()),
+          (route) => false,
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +101,7 @@ class _DestinationPlanScreenState extends State<DestinationPlanScreen> {
           ),
         ),
       ),
-      bottomSheet: BottomNavBar(currentIndex: 2, onTap: (_) {}),
+      bottomSheet: BottomNavBar(currentIndex: 0, onTap: _onNavTap),
     );
   }
 

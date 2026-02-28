@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voyz/theme/app_theme.dart';
 
 /// Bottom navigation bar shared across Planner, Suggestions, Detail, and Plan
-/// screens. Renders 4 items: Explore, My Trips, AI Planner, Saved.
+/// screens. Renders 3 items: AI Planner, Explore, Saved.
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key, required this.currentIndex, this.onTap});
 
@@ -11,19 +11,14 @@ class BottomNavBar extends StatelessWidget {
 
   static const List<_NavItem> _items = [
     _NavItem(
-      icon: Icons.explore_outlined,
-      activeIcon: Icons.explore,
-      label: 'Explore',
-    ),
-    _NavItem(
-      icon: Icons.map_outlined,
-      activeIcon: Icons.map,
-      label: 'My Trips',
-    ),
-    _NavItem(
       icon: Icons.auto_awesome_outlined,
       activeIcon: Icons.auto_awesome,
       label: 'AI Planner',
+    ),
+    _NavItem(
+      icon: Icons.explore_outlined,
+      activeIcon: Icons.explore,
+      label: 'Explore',
     ),
     _NavItem(
       icon: Icons.bookmark_outline,

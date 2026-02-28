@@ -3,12 +3,39 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:voyz/data/mock_data.dart';
 import 'package:voyz/data/saved_trips_provider.dart';
 import 'package:voyz/screens/destination_detail_screen.dart';
+import 'package:voyz/screens/saved_screen.dart';
+import 'package:voyz/screens/smart_planner_screen.dart';
 import 'package:voyz/theme/app_theme.dart';
 import 'package:voyz/widgets/shared/bottom_nav_bar.dart';
 
 /// AI Travel Suggestions screen — scrollable list of AI-recommended destinations.
-class SuggestionsScreen extends StatelessWidget {
+class SuggestionsScreen extends StatefulWidget {
   const SuggestionsScreen({super.key});
+
+  @override
+  State<SuggestionsScreen> createState() => _SuggestionsScreenState();
+}
+
+class _SuggestionsScreenState extends State<SuggestionsScreen> {
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SmartPlannerScreen()),
+          (route) => false,
+        );
+        break;
+      case 1:
+        // Already on Explore
+        break;
+      case 2:
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const SavedScreen()),
+          (route) => false,
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +81,7 @@ class SuggestionsScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomSheet: BottomNavBar(currentIndex: 0, onTap: (_) {}),
+      bottomSheet: BottomNavBar(currentIndex: 1, onTap: _onNavTap),
     );
   }
 }
